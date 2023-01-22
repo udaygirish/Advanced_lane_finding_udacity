@@ -1,7 +1,13 @@
+# Temporary Exclusion
+./project_video.mp4
+./challenge_video.mp4
+./harder_challenge_video.mp4
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+./lib/__pycache__
 
 # C extensions
 *.so
