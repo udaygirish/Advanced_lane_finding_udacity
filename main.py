@@ -15,10 +15,11 @@ lanefinder = LaneFinder()
 
 
 def image_runner(mtx, dst, img):
-    undist_img = cam_calib.undistort(img, mtx, dst)
+    undist_img_org = cam_calib.undistort(img, mtx, dst)
     undist_img = cv2.resize(
-        undist_img, None, fx=1 / 2, fy=1 / 2, interpolation=cv2.INTER_AREA
+        undist_img_org, None, fx=1 / 2, fy=1 / 2, interpolation=cv2.INTER_AREA
     )
+    cv2.imwrite("./output_images/sample_undistorted1.jpg", undist_img_org)
     rows, cols = undist_img.shape[:2]
     # undist_img = img_thresh.histogram_equalizer(undist_img)
 

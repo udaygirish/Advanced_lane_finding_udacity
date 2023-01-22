@@ -30,10 +30,10 @@ Sample_Output
 ![Folder_Structure](./readme_images/Folder_Structure.jpg)
 
 * lib is the source folder for all the modules.
-* img_operations.py contains all the objects and methods necessary for image transformation
-* cam_calibration.py contains all the objects and methods necessary for Camera Calibration and calculation of Distortion Coefficient.
-* lane_finder.py contains all the objects and methods necessary for Lane Detection, Identification, Curvature measurement and Helper functions for plotting the output on Images or videos
-* main.py is the Main program to run the Code. It imports all the functions above and capable to work with both video and image.
+* `img_operations.py` contains all the objects and methods necessary for image transformation
+* `cam_calibration.py` contains all the objects and methods necessary for Camera Calibration and calculation of Distortion Coefficient.
+* `lane_finder.py` contains all the objects and methods necessary for Lane Detection, Identification, Curvature measurement and Helper functions for plotting the output on Images or videos
+* `main.py` is the Main program to run the Code. It imports all the functions above and capable to work with both video and image.
 * test_images contains test images
 * camera_cal contains the calibration Images
 * output_images contains the outputs of test images
@@ -41,13 +41,17 @@ Sample_Output
 
 ####How to Run
 The code can be executed with the help of simple python3 main.py call with arguments
-*****Arguments*****
+****Arguments****
 
         * -i/--input ==> To give the Input Path
         * -it/--input_type ==> To specify input type <video/image>
         * -o/--output_path ==> Output Path, default set to output_images -> Folder path only (Default Output File is saved with <input_file_name>_output.*)
 
-*****Run Command*****
+****Install Dependencies***
+
+        pip3 install -r requirements.txt
+
+****Run Command****
 
         python3 main.py -i <video_path/image_path> --it <video/image> 
         -o <output_path>
@@ -59,15 +63,24 @@ The code can be executed with the help of simple python3 main.py call with argum
 
 When a camera looks at a 3D Object and tries to register it to a 2D Image. The 2D representation becomes a bit distorted because of the 3D and angular aspects of the Object. Usually this involves multiple aspects such as the Position of the object, Angle w.r.t plane /camera plane, Camera Relative position, Camera Focal length etc. These distortion coefficients and calibration are calculated with the help of a Pinhole Model approach.
 This Calibration of Camera is available as a module in OpenCV called 
-cv2.calibrate
+cv2.calibrateCamera() and the Distorition correction is applied using cv2.undistort(). This calibration is performed on 20 Chessboard Images.
+All these methods are present in the file --> `lib/cam_calibration.py`
+In this, I started by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world(Chessboard Object points Dimension- 9*6). Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection. 
+I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function. The calculated coefficients can be used with `cv2.undistort()` function to undistort a image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
-
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
-
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
-
-![alt text][image1]
+A Sample result is attached here.
+![Sample Undistortion Result][image1]
+<table>
+  <tr>
+    <td>Distorted Calibration1<img src="camera_cal/calibration1.jpg"  alt="1" width = 480px height = 480px ></td>
+    <td>Undistorted Calibration1<img src="readme_images/sample_undistorted.jpg" alt="2" width = 480px height = 480px></td>
+   </tr> 
+   <tr>
+      <td>Distorted Test6<img src="test_images/test6.jpg" alt="3" width = 480px height = 480px></td>
+      <td>Undistorted Test6<img src="readme_images/sample_undistorted1.jpg" align="right" alt="4" width = 480px height = 480px>
+  </td>
+  </tr>
+</table>
 
 #### Pipeline (Single Image Based) - Explanation
 
@@ -148,9 +161,6 @@ This is just to show some current SOTA methods I have gone through and tried to 
 
 ### Discussion
 
-#### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
-
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further. 
 
 
 #### References
