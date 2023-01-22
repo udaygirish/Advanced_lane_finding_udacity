@@ -1,14 +1,14 @@
 ## Advanced Lane Finding Project
 ---
-####Introduction
+### Introduction
 This project is a part of coursework of Udacity Self Driving Nanodegree. The projects aim is to revisit the learnings from Image processing and Computer vision concepts and apply them to solve a real world simple version of a complex problem - Lane Identification for Self Driving Cars. Here we mostly use Traditional methods, most of the outputs are based on Thresholding methods and some Poly Fit math, I have also attached a sample video of State of the Art Latest deep learning approaches to just show the progress we made as a Self Driving community. Code for DL approaches not available here, This repo is only for Traditional methods, for DL approaches I have provided references.
 
 
 
-####Goal 
+### Goal 
 To find the Lane boundaries, Curvature and Vehicles position from a Car Frontal Cam View.
 
-####Steps
+### Steps
 * Compute the camera calibration matrix and distortion coefficients given a set of chessboard images.
 * Apply a distortion correction to raw images.
 * Use color transforms, gradients, etc., to create a thresholded binary image.
@@ -22,11 +22,11 @@ Sample_Output
 ![Sample_Output](./output_images/test6_output.jpg)
 
 
-####Pipeline - Flow Diagram
+### Pipeline - Flow Diagram
 ![Pipeline Block Diagram](./readme_images/adv_lane_finding_pipeline.png) 
 
 
-####Code-Folder Explanation
+### Code-Folder Explanation
 ![Folder_Structure](./readme_images/Folder_Structure.jpg)
 
 * lib is the source folder for all the modules.
@@ -39,7 +39,7 @@ Sample_Output
 * output_images contains the outputs of test images
 
 
-####How to Run
+### How to Run
 The code can be executed with the help of simple python3 main.py call with arguments
 ****Arguments****
 
@@ -59,7 +59,7 @@ The code can be executed with the help of simple python3 main.py call with argum
         Example Command:
         python3 main.py -i ./project_video.mp4 -it video -o ./output_images/
 
-####Camera Calibration
+### Camera Calibration
 
 When a camera looks at a 3D Object and tries to register it to a 2D Image. The 2D representation becomes a bit distorted because of the 3D and angular aspects of the Object. Usually this involves multiple aspects such as the Position of the object, Angle w.r.t plane /camera plane, Camera Relative position, Camera Focal length etc. These distortion coefficients and calibration are calculated with the help of a Pinhole Model approach.
 This Calibration of Camera is available as a module in OpenCV called 
@@ -82,7 +82,7 @@ A Sample result is attached here.
   </tr>
 </table>
 
-#### Pipeline (Single Image Based) - Explanation
+###  Pipeline (Single Image Based) - Explanation
 
 #### 1. Provide an example of a distortion-corrected image.
 
@@ -143,7 +143,7 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 
 ---
 
-####Pipeline (video) Links
+### Pipeline (video) Links
 
 ***Traditional Methods***
 
@@ -163,5 +163,5 @@ This is just to show some current SOTA methods I have gone through and tried to 
 
 
 
-#### References
+### References
 
