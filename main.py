@@ -7,6 +7,8 @@ from lib.cam_calibration import Camcalib
 from lib.img_operations import ImgOperator
 from lib.lane_finder import LaneFinder, Line
 from tqdm import tqdm
+import os
+import shutil
 
 
 cam_calib = Camcalib()
@@ -14,17 +16,18 @@ img_operator = ImgOperator()
 lanefinder = LaneFinder()
 
 
-def image_runner(mtx, dst, img):
+def image_runner(mtx, dst, img, inter_path, save_intermediate=False):
     undist_img_org = cam_calib.undistort(img, mtx, dst)
     undist_img = cv2.resize(
         undist_img_org, None, fx=1 / 2, fy=1 / 2, interpolation=cv2.INTER_AREA
     )
-    cv2.imwrite("./output_images/sample_undistorted1.jpg", undist_img_org)
     rows, cols = undist_img.shape[:2]
     # undist_img = img_thresh.histogram_equalizer(undist_img)
 
     sobel_thresh = img_operator.gradient_combine_threshold(undist_img)
+
     hls_thresh = img_operator.hls_combined_threshold(undist_img)
+
     combined_thresh = img_operator.combined_hls_sobel_threshold(
         sobel_thresh, hls_thresh
     )
@@ -37,10 +40,11 @@ def image_runner(mtx, dst, img):
 
     # Get warped image and Warp transformation
     warped_img, M, Minv = img_operator.warp_image(combined_thresh, src, dst, (720, 720))
+
     # Initiate Lines
     left_line = Line()
     right_line = Line()
-    lane_img = lanefinder.blind_search(warped_img, left_line, right_line)
+    lane_img = lanefinder.blind_window_search(warped_img, left_line, right_line)
 
     w_comb_result, w_color_result = lanefinder.draw_lane(
         lane_img, left_line, right_line
@@ -53,7 +57,17 @@ def image_runner(mtx, dst, img):
 
     # Combine the result with the original image
     result = cv2.addWeighted(undist_img, 1, comb_result, 0.3, 0)
+    result1 = result  # Just for storing intermediate variable - For showing result out
     lanefinder.draw_road_info(result, left_line, right_line)
+    if save_intermediate == True:
+        cv2.imwrite(inter_path + "_undistorted.jpg", undist_img_org)
+        cv2.imwrite(inter_path + "_sobel_thresh.jpg", sobel_thresh)
+        cv2.imwrite(inter_path + "_hls_thresh.jpg", hls_thresh)
+        cv2.imwrite(inter_path + "_combinedthreshold.jpg", combined_thresh)
+        cv2.imwrite(inter_path + "_warped.jpg", warped_img)
+        cv2.imwrite(inter_path + "_laneout.jpg", w_comb_result)
+        cv2.imwrite(inter_path + "_unwarpedout.jpg", result1)
+        cv2.imwrite(inter_path + "_finalout.jpg", result)
 
     return result
 
@@ -65,7 +79,7 @@ def runOnVideo(video, maxFrames, mtx, dst):
         if not hasFrame:
             print("Please check the Video path and Video is corrupted or not")
             break
-        visualization = image_runner(mtx, dst, frame)
+        visualization = image_runner(mtx, dst, frame, " ", False)
 
         yield visualization
 
@@ -144,7 +158,20 @@ def main():
         print(output_path)
         cam_calib.calculate_projection_err()
         img = cv2.imread(args.input)
-        result = image_runner(mtx, dst, img)
+        inter_fold_path = args.output_path + "intermediate_out/"
+        if os.path.isdir(inter_fold_path):
+            shutil.rmtree(inter_fold_path)
+            os.mkdir(inter_fold_path)
+        else:
+            os.mkdir(inter_fold_path)
+        intermediate_path = (
+            args.output_path
+            + "intermediate_out/"
+            + args.input.split("/")[-1].split(".")[0]
+        )
+        save_intermediate_out = True  # Save Intermediate Outputs
+
+        result = image_runner(mtx, dst, img, intermediate_path, save_intermediate_out)
         cv2.imwrite(output_path, result)
 
 

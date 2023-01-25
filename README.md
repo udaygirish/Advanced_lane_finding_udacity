@@ -18,7 +18,7 @@ To find the Lane boundaries, Curvature and Vehicles position from a Car Frontal 
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-Sample_Output
+
 ![Sample_Output](./output_images/test6_output.jpg)
 
 
@@ -47,7 +47,7 @@ The code can be executed with the help of simple python3 main.py call with argum
         * -it/--input_type ==> To specify input type <video/image>
         * -o/--output_path ==> Output Path, default set to output_images -> Folder path only (Default Output File is saved with <input_file_name>_output.*)
 
-****Install Dependencies***
+*****Install Dependencies*****
 
         pip3 install -r requirements.txt
 
@@ -68,8 +68,9 @@ All these methods are present in the file --> `lib/cam_calibration.py`
 In this, I started by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world(Chessboard Object points Dimension- 9*6). Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection. 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function. The calculated coefficients can be used with `cv2.undistort()` function to undistort a image.
 
+
 A Sample result is attached here.
-![Sample Undistortion Result][image1]
+
 <table>
   <tr>
     <td>Distorted Calibration1<img src="camera_cal/calibration1.jpg"  alt="1" width = 480px height = 480px ></td>
@@ -83,63 +84,80 @@ A Sample result is attached here.
 </table>
 
 ###  Pipeline (Single Image Based) - Explanation
+Throughout this explanation the image we used is the Test3.jpg in test_images.
+The code is configured to save these intermediate outputs by specifying a flag named `save_intermediate_out` in the `main.py`.
+#### 1. Distortion Correction
 
-#### 1. Provide an example of a distortion-corrected image.
+To Demonstrate this we will be using the test6 image in test_images
+***Distortion Correction Output***
+![Distortion Corrected Test6 Output](./output_images/intermediate_out/test3_undistorted.jpg)
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+#### 2. Transforms, Gradients --> Image Thresholding
+First I cropped the image to approximately half, and this parameter can be varied to filter the noise which is not having the Road lanes in context.
+Post that I transformed the Image using Sobel Threshold and Individual threshold on HLS Channel as HLS is a prominent color space for explaining the image with respect to different environmental conditions.
+The Code for my Transforms and Gradients is present in `img_operations.py` under `ImgOperator` Class.
+You can finetune the thresholds or the cropping size from the initialization variables in the class.
 
-#### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
+Sobel Threshold Output:
+![Sobel Threshold Output](output_images/intermediate_out/test3_sobel_thresh.jpg)
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+HLS Threshold Output
+![HLS Threshold Output](output_images/intermediate_out/test3_hls_thresh.jpg)
 
-![alt text][image3]
+Post that I combined both threshold to get more accurate representation and a mix of both Sobel Directional, Magnitude and HLS Individual Channel thresholds.
 
-#### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
+Combined Threshold Output
+![Combined Threshold Output](output_images/intermediate_out/test3_combinedthreshold.jpg)
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+#### 3. Perspective Transform --> Warping
+The code for my Perspective transform for Warping the Image in Birds eye view is present in `img_operations.py` under `ImgOperator` class under `warp_image` method.
 
+
+The method takes input arguemnts - Image, src, dst, size
+Image - Image after thresholding
+src - Selected keypoints for Transformation
+dst - Output Keypoints on how which the projection should happen
+size - Size of the output image
+
+Please find the src, dst keypoint selection. These threshold can further be tuned.
 ```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
+    s_ltop, s_rtop = [img_size[1] / 2 - 24, 5], [img_size[1] / 2 + 24, 5]
+    s_lbottom, s_rbottom = [110, img_size[0]], [img_size[1] - 50, img_size[0]]
+    src = np.float32([s_lbottom, s_ltop, s_rtop, s_rbottom])
+    dst = np.float32([(150, 720), (150, 0), (500, 0), (500, 720)])
 ```
 
-This resulted in the following source and destination points:
 
-| Source        | Destination   | 
-|:-------------:|:-------------:| 
-| 585, 460      | 320, 0        | 
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+Warped - Perspective Transform Output of above Combined threshold Image
+![Perspective Transform Output](./output_images/intermediate_out/test3_warped.jpg)
 
-I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
+#### 4. Lane Finding
+On the perspective transform output, I performed three steps to get the lanes.
+1. Histogram of the Perspective output to identify the lanes by finding the max of the histogram and assigning the peaks as the left lane and right lane starting points.
+2. Then a custom window size  and window border size is specified
+   Here i used window_size as 10 and this can be further be tuned. And the window border size is 50 currently and this can be further tuned.
+   These two parameter helps us to tune the Sliding window size.
+     *  Height of the Sliding window = total_height/window_sizw
+      * left edge of the sliding window = lane_center - window_border_size
+      * right edge of the sliding window = lane_center + window_border_size
+3. Then a Blind search is performed to traverse the window on the intensified lanes.
 
-![alt text][image4]
+Output of the Lane finder Class.
+The entire code is present in `lib/lane_finder.py`  under class `LaneFinder` and the lane thresholds can be tuned in both `LaneFinder` and `Lane`.
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+![Lane Finding Output](./output_images/intermediate_out/test3_laneout.jpg)
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+#### 5. Radius of Curvature and Vehicle Relative Position Calculation
 
-![alt text][image5]
+I performed this calculation in the file `lib/lane_finder.py` under class `LaneFinder` and defined under `draw_road_info` method.
 
-#### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
+#### 6. Final Result plotted back to Unwarped Image
 
-I did this in lines # through # in my code in `my_other_file.py`
+I performed this plotting in the file `lib/lane_finder.py` under class `LaneFinder` and defined under `draw_lane` method.
+Further the output is passed onto `draw_road_info` function to print the necessary outputs on the Unwarped output Image.
 
-#### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
-
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
-
-![alt text][image6]
+Final Unwarped Output 
+![Unwarped Final Output](./output_images/intermediate_out/test3_finalout.jpg)
 
 ---
 
@@ -160,8 +178,11 @@ This is just to show some current SOTA methods I have gone through and tried to 
 
 
 ### Discussion
-
-
+* Even though the current output is not bad, it needs a lot of improvement in Stability and Generalization perspective. As there are many thresholds currently in place to obtain the desired output, this is very hard in Real world scenario.
+* Also the current approach when I tested with Challenge and Harder Challenge, it was struggling to give a stable output, this will be a major issue as it can throw the car offlane especially I saw this scenario on Harder Challenge. 
+* Most of the current threshold I finetuned for Project Videos and Stable Test Images but given a more diversified scenarion these thresholds might not work.
+* This is where I came across Deep learning based SOTA approaches and tried to play with them and linked the output videos under Deep Learning methods.
+* Overall, this is a quite interesting problem and helped me a lot to learn on how different image filters work and the CNN based approaches similar to them.
 
 ### References
 
