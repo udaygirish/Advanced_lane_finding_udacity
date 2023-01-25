@@ -4,7 +4,6 @@
 This project is a part of coursework of Udacity Self Driving Nanodegree. The projects aim is to revisit the learnings from Image processing and Computer vision concepts and apply them to solve a real world simple version of a complex problem - Lane Identification for Self Driving Cars. Here we mostly use Traditional methods, most of the outputs are based on Thresholding methods and some Poly Fit math, I have also attached a sample video of State of the Art Latest deep learning approaches to just show the progress we made as a Self Driving community. Code for DL approaches not available here, This repo is only for Traditional methods, for DL approaches I have provided references.
 
 
-
 ### Goal 
 To find the Lane boundaries, Curvature and Vehicles position from a Car Frontal Cam View.
 
@@ -18,9 +17,10 @@ To find the Lane boundaries, Curvature and Vehicles position from a Car Frontal 
 * Warp the detected lane boundaries back onto the original image.
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
-
-![Sample_Output](./output_images/test6_output.jpg)
-
+<p align="center">
+    <img src="./output_images/test6_output.jpg" width="640" alt="Test6_Output" /><br>
+    <b>Sample Output</b><br>
+</p>
 
 ### Pipeline - Flow Diagram
 ![Pipeline Block Diagram](./readme_images/adv_lane_finding_pipeline.png) 
@@ -89,8 +89,11 @@ The code is configured to save these intermediate outputs by specifying a flag n
 #### 1. Distortion Correction
 
 To Demonstrate this we will be using the test6 image in test_images
-***Distortion Correction Output***
-![Distortion Corrected Test6 Output](./output_images/intermediate_out/test3_undistorted.jpg)
+
+<p align="center">
+    <img src="./output_images/intermediate_out/test3_undistorted.jpg" width="640" alt="Test3_Output" /><br>
+    <b>Distortion Correction Output</b><br>
+</p>
 
 #### 2. Transforms, Gradients --> Image Thresholding
 First I cropped the image to approximately half, and this parameter can be varied to filter the noise which is not having the Road lanes in context.
@@ -98,16 +101,24 @@ Post that I transformed the Image using Sobel Threshold and Individual threshold
 The Code for my Transforms and Gradients is present in `img_operations.py` under `ImgOperator` Class.
 You can finetune the thresholds or the cropping size from the initialization variables in the class.
 
-Sobel Threshold Output:
-![Sobel Threshold Output](output_images/intermediate_out/test3_sobel_thresh.jpg)
+<p align="center">
+    <img src="output_images/intermediate_out/test3_sobel_thresh.jpg" width="640" alt="Test3_Output" /><br>
+    <b>Sobel Threshold Output</b><br>
+</p>
 
-HLS Threshold Output
-![HLS Threshold Output](output_images/intermediate_out/test3_hls_thresh.jpg)
+<p align="center">
+    <img src="output_images/intermediate_out/test3_hls_thresh.jpg" width="640" alt="Test3_Output" /><br>
+    <b>HLS Threshold Output</b><br>
+</p>
 
-Post that I combined both threshold to get more accurate representation and a mix of both Sobel Directional, Magnitude and HLS Individual Channel thresholds.
+Post that , I combined both threshold to get more accurate representation and a mix of both Sobel Directional, Magnitude and HLS Individual Channel thresholds.
 
 Combined Threshold Output
-![Combined Threshold Output](output_images/intermediate_out/test3_combinedthreshold.jpg)
+
+<p align="center">
+    <img src="output_images/intermediate_out/test3_combinedthreshold.jpg" width="640" alt="Test3_Output" /><br>
+    <b>Combined Threshold Output</b><br>
+</p>
 
 #### 3. Perspective Transform --> Warping
 The code for my Perspective transform for Warping the Image in Birds eye view is present in `img_operations.py` under `ImgOperator` class under `warp_image` method.
@@ -127,9 +138,13 @@ Please find the src, dst keypoint selection. These threshold can further be tune
     dst = np.float32([(150, 720), (150, 0), (500, 0), (500, 720)])
 ```
 
+#####  Warped - Perspective Transform Output of above Combined threshold Image
 
-Warped - Perspective Transform Output of above Combined threshold Image
-![Perspective Transform Output](./output_images/intermediate_out/test3_warped.jpg)
+
+<p align="center">
+    <img src="./output_images/intermediate_out/test3_warped.jpg" width="480" height="640" alt="Test3_Output" /><br>
+    <b>Perspective Transform Output</b><br>
+</p>
 
 #### 4. Lane Finding
 On the perspective transform output, I performed three steps to get the lanes.
@@ -145,7 +160,10 @@ On the perspective transform output, I performed three steps to get the lanes.
 Output of the Lane finder Class.
 The entire code is present in `lib/lane_finder.py`  under class `LaneFinder` and the lane thresholds can be tuned in both `LaneFinder` and `Lane`.
 
-![Lane Finding Output](./output_images/intermediate_out/test3_laneout.jpg)
+<p align="center">
+    <img src="./output_images/intermediate_out/test3_laneout.jpg" width="540" height="640" alt="Test3_Output" /><br>
+    <b>Lane Finding Output</b><br>
+</p>
 
 #### 5. Radius of Curvature and Vehicle Relative Position Calculation
 
@@ -156,8 +174,10 @@ I performed this calculation in the file `lib/lane_finder.py` under class `LaneF
 I performed this plotting in the file `lib/lane_finder.py` under class `LaneFinder` and defined under `draw_lane` method.
 Further the output is passed onto `draw_road_info` function to print the necessary outputs on the Unwarped output Image.
 
-Final Unwarped Output 
-![Unwarped Final Output](./output_images/intermediate_out/test3_finalout.jpg)
+<p align="center">
+    <img src="./output_images/intermediate_out/test3_finalout.jpg" width="640" height="480" alt="Test3_Output" /><br>
+    <b>Unwarped Final Output</b><br>
+</p>
 
 ---
 
@@ -172,9 +192,9 @@ Final Unwarped Output
 ***DeepLearning Methods***
 This is just to show some current SOTA methods I have gone through and tried to experiment with to understand how we are solving this problem now.
 
-1.[Project Video DL Output]
-2.[Challenge Video DL Output]
-3.[Harder Challenge Video Output]
+1. [Project Video DL Output]()
+2. [Challenge Video DL Output]()
+3. [Harder Challenge Video Output]()
 
 
 ### Discussion
@@ -185,4 +205,6 @@ This is just to show some current SOTA methods I have gone through and tried to 
 * Overall, this is a quite interesting problem and helped me a lot to learn on how different image filters work and the CNN based approaches similar to them.
 
 ### References
+
+* 
 
