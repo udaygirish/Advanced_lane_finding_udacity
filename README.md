@@ -192,9 +192,22 @@ Further the output is passed onto `draw_road_info` function to print the necessa
 ***DeepLearning Methods***
 This is just to show some current SOTA methods I have gone through and tried to experiment with to understand how we are solving this problem now.
 
-1. [Project Video DL Output]()
-2. [Challenge Video DL Output]()
-3. [Harder Challenge Video Output]()
+
+    Deep Lane Detection methods are classified under three categories
+    1. Segmentation Based
+        * Segmentation based method usually exploit Foreground Texture to segment the Line pixels and decode these pixels into line instances 
+    2. Point Detection Based
+        * Point Based methods usually adopt RCNN framework and detect lanes by detecting a series of keypoints. 
+    3. Curve Based methods
+       * Tries to model the lane lines as hollistic curves as polynomial curves.
+
+The below results are obtained from a [Open source implementation](https://github.com/voldemortX/pytorch-auto-drive) using Baseline config of a Real Time semantic segmentation implementation named ERF Net (A point based network- [Paper](https://sh-tsang.medium.com/reading-erfnet-efficient-residual-factorized-convnet-for-real-time-semantic-segmentation-4dd85991647e)).
+
+Please follow the links to find the video outputs.
+
+1. [Project Video DL Output](https://drive.google.com/file/d/1mzqIHnHdm9r6qq-vFdHVWcdHRZaKWG0D/view?usp=sharing)
+2. [Challenge Video DL Output](https://drive.google.com/file/d/1Pn9kJ8zu5e7miIsp8gzgicMdHVhJBshR/view?usp=sharing)
+3. [Harder Challenge Video Output](https://drive.google.com/file/d/1bWsZe6zjGEL40ZYWEwkjR-K7BzCfRcnc/view?usp=sharing)
 
 
 ### Discussion
@@ -206,5 +219,7 @@ This is just to show some current SOTA methods I have gone through and tried to 
 
 ### References
 
-* 
+* https://towardsdatascience.com/teaching-cars-to-see-advanced-lane-detection-using-computer-vision-87a01de0424f
+* https://github.com/voldemortX/pytorch-auto-drive
+* After going through several blogs this repository helped me to organize my ideas clearer -> https://github.com/windowsub0406/Advanced-lane-finding
 
