@@ -199,7 +199,7 @@ This is just to show some current SOTA methods I have gone through and tried to 
     2. Point Detection Based
         * Point Based methods usually adopt RCNN framework and detect lanes by detecting a series of keypoints. 
     3. Curve Based methods
-       * Tries to model the lane lines as hollistic curves as polynomial curves.
+       * Tries to model the lane lines as hollistic curves such as polynomial curves.
 
 The below results are obtained from a [Open source implementation](https://github.com/voldemortX/pytorch-auto-drive) using Baseline config of a Real Time semantic segmentation implementation named ERF Net (A point based network- [Paper](https://sh-tsang.medium.com/reading-erfnet-efficient-residual-factorized-convnet-for-real-time-semantic-segmentation-4dd85991647e)).
 
@@ -211,9 +211,9 @@ Please follow the links to find the video outputs.
 
 
 ### Discussion
-* Even though the current output is not bad, it needs a lot of improvement in Stability and Generalization perspective. As there are many thresholds currently in place to obtain the desired output, this is very hard in Real world scenario.
-* Also the current approach when I tested with Challenge and Harder Challenge, it was struggling to give a stable output, this will be a major issue as it can throw the car offlane especially I saw this scenario on Harder Challenge. 
-* Most of the current threshold I finetuned for Project Videos and Stable Test Images but given a more diversified scenarion these thresholds might not work.
+* Even though the current output is not bad, it needs a lot of improvement in Stability and Generalization perspective. As there are many thresholds currently in place to obtain the desired output, this is very hard in Real world scenarios.
+* Also the current approach when I tested with Challenge and Harder Challenge, it was struggling to give a stable output, this will be a major issue as it can throw the car off the lane, especially I saw this scenario on Harder Challenge. 
+* Most of the current thresholds I have finetuned are for Project Videos and Stable Test Images but given a more diversified scenario these thresholds might not work.
 * This is where I came across Deep learning based SOTA approaches and tried to play with them and linked the output videos under Deep Learning methods.
 * Overall, this is a quite interesting problem and helped me a lot to learn on how different image filters work and the CNN based approaches similar to them.
 
